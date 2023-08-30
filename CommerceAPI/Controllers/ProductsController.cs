@@ -2,6 +2,7 @@
 using CommerceAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CommerceAPI.Controllers
@@ -16,15 +17,33 @@ namespace CommerceAPI.Controllers
         {
             _context = context;
         }
-        //Create a new product associated with a specific merchant
+
         //Retrieve a specific product by its primary key
         //Update an existing product
         //Delete a product by its primary key
 
+
+        [HttpGet]
+        public ActionResult GetAllProducts()
+        {
+            var product = _context.Products;
+            return new JsonResult(product);
+        }
+
+
         [HttpGet("{id}")]
-        public ActionResult GetProduct(int id)
+        public ActionResult GetSingleProduct(int id)
         {
             var product = _context.Products.Find(id);
+            return new JsonResult(product);
+        }
+
+        [HttpPost]
+        public ActionResult CreateProduct(int merchantId, Product product)
+        {
+            var merchant = _context.Merchants.Where(m => m.Id == merchantId).Include(p => p.Products).First();
+            merchant.Products.Add(product);
+            _context.SaveChanges();
             return new JsonResult(product);
         }
     }
