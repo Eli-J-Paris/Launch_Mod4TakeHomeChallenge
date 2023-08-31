@@ -24,10 +24,10 @@ namespace CommerceAPI.Controllers
 
 
         [HttpGet]
-        public ActionResult GetAllProducts()
+        public ActionResult GetAllProducts(int merchantId)
         {
-            var product = _context.Products;
-            return new JsonResult(product);
+            var products = _context.Products.Where(p =>p.MerchantId == merchantId);
+            return new JsonResult(products);
         }
 
 
@@ -55,5 +55,19 @@ namespace CommerceAPI.Controllers
             _context.SaveChanges();
             return new JsonResult(product);
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteProduct(int id, Product product)
+        {
+            var products = _context.Products;
+
+            product.Id = id;
+            _context.Products.Remove(product);
+            _context.SaveChanges();
+
+            return  new JsonResult(products);
+        }
+
+
     }
 }
