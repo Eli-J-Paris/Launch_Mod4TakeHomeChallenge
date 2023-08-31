@@ -18,7 +18,7 @@ namespace CommerceAPI.Controllers
             _context = context;
         }
 
-        //Retrieve a specific product by its primary key
+        
         //Update an existing product
         //Delete a product by its primary key
 
@@ -43,6 +43,15 @@ namespace CommerceAPI.Controllers
         {
             var merchant = _context.Merchants.Where(m => m.Id == merchantId).Include(p => p.Products).First();
             merchant.Products.Add(product);
+            _context.SaveChanges();
+            return new JsonResult(product);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateProduct(int id, Product product)
+        {
+            product.Id = id;
+            _context.Products.Update(product);
             _context.SaveChanges();
             return new JsonResult(product);
         }
