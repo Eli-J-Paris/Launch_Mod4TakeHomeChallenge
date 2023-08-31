@@ -18,10 +18,6 @@ namespace CommerceAPI.Controllers
             _context = context;
         }
 
-        
-        //Update an existing product
-        //Delete a product by its primary key
-
 
         [HttpGet]
         public ActionResult GetAllProducts(int merchantId)
