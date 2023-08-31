@@ -76,7 +76,7 @@ namespace CommerceAPITests.EndpointTests
         }
 
         [Fact]
-        public async void GetProducts_ReturnsSingleProduct()
+        public async void GetProduct_ReturnsSingleProduct()
         {
             var context = GetDbContext();
             var client = _factory.CreateClient();
