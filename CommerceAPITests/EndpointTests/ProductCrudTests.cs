@@ -143,7 +143,24 @@ namespace CommerceAPITests.EndpointTests
 
             var newProduct = context.Products.First();
             Assert.Equal("Coffee Maker", newProduct.Name);
+        }
 
+        [Fact]
+        public async void DeleteProduct_DeletesAnExistingProduct()
+        {
+            var context = GetDbContext();
+            var client = _factory.CreateClient();
+
+            var merchant1 = new Merchant { Name = "Biker Jim's", Category = "Restaurant" };
+            context.Merchants.Add(merchant1);
+            Product product1 = new Product { Name = "FOOD", Description = "desription", Category = "bike food", MerchantId = merchant1.Id };
+            context.Products.Add(product1);
+
+            context.SaveChanges();
+
+            var response = await client.DeleteAsync($"/api/{merchant1.Id}/products/{product1.Id}");
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.DoesNotContain("FOOD", content);
         }
 
     }
