@@ -75,5 +75,31 @@ namespace CommerceAPITests.EndpointTests
 
         }
 
+        [Fact]
+        public async void GetProducts_ReturnsSingleProduct()
+        {
+            var context = GetDbContext();
+            var client = _factory.CreateClient();
+
+            var merchant1 = new Merchant { Name = "Biker Jim's", Category = "Restaurant" };
+            context.Merchants.Add(merchant1);
+            Product product1 = new Product { Name = "FOOD", Description = "desription", Category = "bike food", MerchantId = merchant1.Id };
+            Product product2 = new Product { Name = "burger", Description = "desription", Category = "people food", MerchantId = merchant1.Id };
+            List<Product> products = new() { product1, product2 };
+            context.Products.AddRange(products);
+
+            context.SaveChanges();
+
+            var response = await client.GetAsync($"/api/merchants/{merchant1.Id}/products/{product1.Id}");
+            var content = await response.Content.ReadAsStringAsync();
+
+            string expected = ObjectToJson(product1);
+
+            response.EnsureSuccessStatusCode();
+            Assert.Equal(expected, content);
+            Assert.DoesNotContain(ObjectToJson(product2), content);
+
+        }
+
     }
 }
