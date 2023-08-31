@@ -10,5 +10,6 @@
         public int PriceInCents { get; set; }
         public int StockQuantity { get; set; }
         public DateTime ReleaseDate { get; set; }
+       
     }
 }
