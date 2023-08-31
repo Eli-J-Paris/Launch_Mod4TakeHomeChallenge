@@ -101,5 +101,25 @@ namespace CommerceAPITests.EndpointTests
 
         }
 
+        [Fact]
+        public async void CreateProduct_CreatesProduct()
+        {
+            var context = GetDbContext();
+            var client = _factory.CreateClient();
+
+            var merchant1 = new Merchant { Name = "Biker Jim's", Category = "Restaurant" };
+            context.Merchants.Add(merchant1);
+            context.SaveChanges();
+
+            var jsonString = "{ \"Name\": \"Coffee Maker\", \"Description\": \"Brews up to 12 cups then breaks\", \"Category\": \"Home Appliances\", \"Price\": 1100, \"StockQuantity\": 20, \"ReleaseDate\": \"2023-03-01T00:00:00.000Z\", \"MerchantId\": 1}";
+            var requestContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"/api/merchants/{merchant1.Id}/products", requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var newProduct = context.Products.First();
+            Assert.Equal("Coffee Maker", newProduct.Name);
+        }
+
     }
 }
